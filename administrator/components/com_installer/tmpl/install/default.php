@@ -35,10 +35,16 @@ $app = JFactory::getApplication();
 					<?php if ($this->showMessage) : ?>
 						<?php echo $this->loadTemplate('message'); ?>
 					<?php endif; ?>
-					<?php // Show installation tabs at the start ?>
-					<?php $firstTab = $app->triggerEvent('onInstallerViewBeforeFirstTab', array()); ?>
 					<?php $tabs = $app->triggerEvent('onInstallerAddInstallationTab', array()); ?>
-					<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => $tabs[0]['name'])); ?>
+                    <?php
+                    $active = '';
+
+                    if (isset($tabs[0]))
+                    {
+                        $active = $tabs[0]['name'];
+                    }
+                    ?>
+					<?php echo JHtml::_('bootstrap.startTabSet', 'myTab', array('active' => $active)); ?>
 					<?php // Show installation tabs ?>
 					<?php foreach ($tabs as $tab) : ?>
 						<?php echo JHtml::_('bootstrap.addTab', 'myTab', $tab['name'], $tab['label']); ?>
@@ -47,9 +53,6 @@ $app = JFactory::getApplication();
 						</fieldset>
 						<?php echo JHtml::_('bootstrap.endTab'); ?>
 					<?php endforeach; ?>
-					<?php // Show installation tabs at the end ?>
-					<?php $lastTab = $app->triggerEvent('onInstallerViewAfterLastTab', array()); ?>
-					<?php $tabs = array_merge($firstTab, $tabs, $lastTab); ?>
 					<?php if (!$tabs) : ?>
 						<?php $app->enqueueMessage(JText::_('COM_INSTALLER_NO_INSTALLATION_PLUGINS_FOUND'), 'warning'); ?>
 					<?php endif; ?>
